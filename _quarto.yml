@@ -1,0 +1,30 @@
+project:
+  type: book
+
+book:
+  title: "Nonlinear Programming"
+  author: "Kunlei Lian"
+  date: "9/24/2022"
+
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - part: "Unconstrained Nonlinear Programming"
+      chapters: 
+        - uncons-golden-section-search.ipynb
+    - part: "Constrained Nonlinear Programming"
+      chapters: 
+        - cons-special-forms.ipynb
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+
+

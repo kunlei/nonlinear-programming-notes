@@ -1,0 +1,20 @@
+{
+  "index.qmd": {
+    "index.html": "00ea9b30"
+  },
+  "intro.qmd": {
+    "intro.html": "48d475f2"
+  },
+  "summary.qmd": {
+    "summary.html": "7c99cc8b"
+  },
+  "references.qmd": {
+    "references.html": "721ae23e"
+  },
+  "uncons-golden-section-search.ipynb": {
+    "uncons-golden-section-search.html": "fa339893"
+  },
+  "cons-special-forms.ipynb": {
+    "cons-special-forms.html": "036ed741"
+  }
+}
