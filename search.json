@@ -2,16 +2,30 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Nonlinear Programming",
+    "title": "Hands-on Nonlinear Programming in Python",
     "section": "",
     "text": "Preface"
   },
   {
-    "objectID": "intro.html",
-    "href": "intro.html",
-    "title": "1  Introduction",
-    "section": "",
-    "text": "This is a book created from markdown and executable code.\nSee Knuth (1984) for additional discussion of literate programming.\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+    "objectID": "uncons-golden-section-search.html#unimodal-function",
+    "href": "uncons-golden-section-search.html#unimodal-function",
+    "title": "2  Unimodal Function and Search Methods",
+    "section": "2.1 Unimodal Function",
+    "text": "2.1 Unimodal Function\nA function \\(f\\) is unimodal if there exists only one maximum (minimum) point for maximization (minimization) problem. This means that the function increases in value up to a certain point, then decreases in value after reaching its maximum point. With unimodal functions, any extreme you find is guaranteed to be the global extreme. Perhaps the concept of unimodality is better grasped through an example. Consider the function \\(f(x)\\) defined as\n\\[\nf(x) = (x + 2)^2\n\\]\nFigure 2.1 shows its plot defined on range [-10, 10].\n\n\n\n\n\nFigure 2.1: An unimodal function\n\n\n\n\nFigure 2.2 shows a multimodal function.\n\n\n14\n\n\n\n\n\nFigure 2.2: An multimodal function"
+  },
+  {
+    "objectID": "uncons-golden-section-search.html#equal-interval-search",
+    "href": "uncons-golden-section-search.html#equal-interval-search",
+    "title": "2  Unimodal Function and Search Methods",
+    "section": "2.2 Equal Interval Search",
+    "text": "2.2 Equal Interval Search"
+  },
+  {
+    "objectID": "uncons-golden-section-search.html#golden-section-search",
+    "href": "uncons-golden-section-search.html#golden-section-search",
+    "title": "2  Unimodal Function and Search Methods",
+    "section": "2.3 Golden Section Search",
+    "text": "2.3 Golden Section Search"
   },
   {
     "objectID": "summary.html",
@@ -19,12 +33,5 @@
     "title": "4  Summary",
     "section": "",
     "text": "In summary, this book has no content whatsoever."
-  },
-  {
-    "objectID": "references.html",
-    "href": "references.html",
-    "title": "References",
-    "section": "",
-    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
   }
 ]
