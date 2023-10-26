@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -195,15 +229,15 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>In this chapter, we look at unimodal functions and existing search methods developed for them.</p>
+<p>Nonlinear programming problems are generally hard to solve, but there are certain types of problems that allow efficient solution methods. In this chapter, we look at unimodal functions and some search methods developed for them.</p>
 <section id="unimodal-function" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="unimodal-function"><span class="header-section-number">2.1</span> Unimodal Function</h2>
-<p>A function <span class="math inline">\(f\)</span> is unimodal if there exists only one maximum (minimum) point for maximization (minimization) problem. This means that the function increases in value up to a certain point, then decreases in value after reaching its maximum point. With unimodal functions, any extreme you find is guaranteed to be the global extreme. Perhaps the concept of unimodality is better grasped through an example. Consider the function <span class="math inline">\(f(x)\)</span> defined as</p>
+<p>A function <span class="math inline">\(f\)</span> is unimodal if there exists only one maximum (minimum) point for maximization (minimization) problem. This means that, for maximization problems, the function increases in value up to a certain point, then decreases in value after reaching its maximum point. With unimodal functions, any extreme you find is guaranteed to be the global extreme. Perhaps the concept of unimodality is better grasped through an example. Consider the function <span class="math inline">\(f(x)\)</span> defined as</p>
 <p><span class="math display">\[
-f(x) = (x + 2)^2
+f(x) = (x + 2)^2, \ -10 \leq x &lt;= 10
 \]</span></p>
-<p><a href="#fig-unimodal-function">Figure&nbsp;<span>2.1</span></a> shows its plot defined on range [-10, 10].</p>
-<div class="cell" data-execution_count="28">
+<p><a href="#fig-unimodal-function">Figure&nbsp;<span>2.1</span></a> plots function <span class="math inline">\(f\)</span> on its defined range. Note that function <span class="math inline">\(f\)</span> is unimodal only in the minimization case.</p>
+<div class="cell" data-execution_count="141">
 <div class="cell-output cell-output-display">
 <div id="fig-unimodal-function" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -213,8 +247,8 @@ f(x) = (x + 2)^2
 </div>
 </div>
 </div>
-<p><a href="#fig-multimodal-function">Figure&nbsp;<span>2.2</span></a> shows a multimodal function.</p>
-<div class="cell" data-execution_count="52">
+<p>To better appreciate unimodality, let’s look at another objective function <span class="math inline">\(\text{min} \ -(1.4 - 2x) \sin(18x)\)</span>. <a href="#fig-multimodal-function">Figure&nbsp;<span>2.2</span></a> shows its plot within range [0, 0.6]. It’s clear that there are two local minima for this objective function.</p>
+<div class="cell" data-execution_count="142">
 <div class="cell-output cell-output-stdout">
 <pre><code>14</code></pre>
 </div>
@@ -222,7 +256,7 @@ f(x) = (x + 2)^2
 <div id="fig-multimodal-function" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="uncons-golden-section-search_files/figure-html/fig-multimodal-function-output-2.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.2: An multimodal function</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;2.2: A multimodal function</figcaption>
 </figure>
 </div>
 </div>
@@ -230,6 +264,75 @@ f(x) = (x + 2)^2
 </section>
 <section id="equal-interval-search" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="equal-interval-search"><span class="header-section-number">2.2</span> Equal Interval Search</h2>
+<p>In this section, we present the equal interval search method. It is assumed that an initial range <span class="math inline">\([lb, ub]\)</span> is provided and the pursued minimum or maximum must locate within the range. The algorithm works as follows:</p>
+<ul>
+<li><strong>Inputs:</strong> function <span class="math inline">\(f(x)\)</span> to be minimized, initial range <span class="math inline">\([lb, ub]\)</span></li>
+<li><strong>Output:</strong> local minimum <span class="math inline">\(x^*\)</span></li>
+<li><strong>Algorithm Flow:</strong>
+<ul>
+<li><strong>Step 1:</strong> Choose a small value <span class="math inline">\(\epsilon\)</span> as the stopping criterion. Let <span class="math inline">\(x^{left} = lb\)</span> and <span class="math inline">\(x^{right} = ub\)</span> denote the initial lower bound and upper bound of the current search range, respectively.</li>
+<li><strong>Step 2:</strong> If <span class="math inline">\(x^{right} - x^{left} \leq \epsilon\)</span>, then <span class="math inline">\(x^* = \frac{1}{2}(x^{left} + x^{right})\)</span>, exit and output <span class="math inline">\(x^*\)</span>. Otherwise, choose two middle points according to <span class="math display">\[\begin{align}
+x^{(1)} = \frac{x^{left} + x^{right}}{2} - \frac{\epsilon}{2} \\
+x^{(2)} = \frac{x^{left} + x^{right}}{2} + \frac{\epsilon}{2}
+\end{align}\]</span> If <span class="math inline">\(f(x^{(1)}) &lt; f(x^{(2)})\)</span>, go to <strong>Step 3</strong>, otherwise, go to step <strong>Step 4</strong>.</li>
+<li><strong>Step 3:</strong> Update the current search interval upper bound by <span class="math display">\[\begin{align}
+x^{right} = x^{(2)}
+\end{align}\]</span> and proceed to <strong>Step 2</strong>.</li>
+<li><strong>Step 4:</strong> Update the current search interval lower bound by <span class="math display">\[\begin{align}
+x^{left} = x^{(1)}
+\end{align}\]</span> and proceed to <strong>Step 2</strong>.</li>
+</ul></li>
+</ul>
+<div class="cell" data-execution_count="143">
+<div class="cell-output cell-output-display">
+<div id="fig-unimodal-function-equal-interval-search-iter-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="uncons-golden-section-search_files/figure-html/fig-unimodal-function-equal-interval-search-iter-1-output-1.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;2.3: Equal interval search</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="144">
+<div class="cell-output cell-output-display">
+<div id="fig-unimodal-function-equal-interval-search-iter-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="uncons-golden-section-search_files/figure-html/fig-unimodal-function-equal-interval-search-iter-2-output-1.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;2.4: Equal interval search</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="145">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">def</span> equal_interval_search(func, lb, ub):</span>
+<span id="cb2-2"><a href="#cb2-2"></a>    x_left <span class="op">=</span> lb</span>
+<span id="cb2-3"><a href="#cb2-3"></a>    x_right <span class="op">=</span> ub</span>
+<span id="cb2-4"><a href="#cb2-4"></a>    eps <span class="op">=</span> <span class="fl">0.01</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>    </span>
+<span id="cb2-6"><a href="#cb2-6"></a>    points <span class="op">=</span> np.empty(shape<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">4</span>), dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb2-7"><a href="#cb2-7"></a>    <span class="cf">while</span> <span class="bu">abs</span>(x_right <span class="op">-</span> x_left <span class="op">-</span> eps) <span class="op">&gt;=</span> <span class="fl">1.e-4</span>:</span>
+<span id="cb2-8"><a href="#cb2-8"></a>        x1 <span class="op">=</span> (x_left <span class="op">+</span> x_right) <span class="op">/</span> <span class="dv">2</span> <span class="op">-</span> eps <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>        x2 <span class="op">=</span> (x_left <span class="op">+</span> x_right) <span class="op">/</span> <span class="dv">2</span> <span class="op">+</span> eps <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>        arr <span class="op">=</span> [x_left, x1, x2, x_right]</span>
+<span id="cb2-11"><a href="#cb2-11"></a>        points <span class="op">=</span> np.append(points, [arr], axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-12"><a href="#cb2-12"></a>        </span>
+<span id="cb2-13"><a href="#cb2-13"></a>        <span class="cf">if</span> f(x1) <span class="op">&lt;</span> f(x2):</span>
+<span id="cb2-14"><a href="#cb2-14"></a>            x_right <span class="op">=</span> x2</span>
+<span id="cb2-15"><a href="#cb2-15"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-16"><a href="#cb2-16"></a>            x_left <span class="op">=</span> x1</span>
+<span id="cb2-17"><a href="#cb2-17"></a>    </span>
+<span id="cb2-18"><a href="#cb2-18"></a>    x_opt <span class="op">=</span> (x_left <span class="op">+</span> x_right) <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a>    <span class="cf">return</span> x_opt, points</span>
+<span id="cb2-20"><a href="#cb2-20"></a></span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="kw">def</span> func(x):</span>
+<span id="cb2-22"><a href="#cb2-22"></a>    <span class="cf">return</span> (x <span class="op">+</span> <span class="dv">2</span>)<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb2-23"><a href="#cb2-23"></a>x_opt, points <span class="op">=</span> equal_interval_search(func, lb<span class="op">=-</span><span class="dv">5</span>, ub<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb2-24"><a href="#cb2-24"></a><span class="bu">print</span>(<span class="bu">round</span>(x_opt, <span class="dv">2</span>))</span>
+<span id="cb2-25"><a href="#cb2-25"></a>    </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-2.0</code></pre>
+</div>
+</div>
 </section>
 <section id="golden-section-search" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="golden-section-search"><span class="header-section-number">2.3</span> Golden Section Search</h2>
