@@ -2,7 +2,8 @@ project:
   type: book
 
 book:
-  title: "Nonlinear Programming"
+  title: "Hands-on Nonlinear Programming in Python"
+  subtitle: "From Beginning to Giving Up"
   author: "Kunlei Lian"
   date: "9/24/2022"
 

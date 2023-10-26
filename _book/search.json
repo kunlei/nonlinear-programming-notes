@@ -2,29 +2,36 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Nonlinear Programming",
+    "title": "Hands-on Nonlinear Programming in Python",
     "section": "",
     "text": "Preface"
   },
   {
-    "objectID": "intro.html",
-    "href": "intro.html",
-    "title": "1  Introduction",
-    "section": "",
-    "text": "This is a book created from markdown and executable code.\nSee Knuth (1984) for additional discussion of literate programming.\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+    "objectID": "uncons-golden-section-search.html#unimodal-function",
+    "href": "uncons-golden-section-search.html#unimodal-function",
+    "title": "2  Unimodal Function and Search Methods",
+    "section": "2.1 Unimodal Function",
+    "text": "2.1 Unimodal Function\nA function \\(f\\) is unimodal if there exists only one maximum (minimum) point for maximization (minimization) problem. This means that, for maximization problems, the function increases in value up to a certain point, then decreases in value after reaching its maximum point. With unimodal functions, any extreme you find is guaranteed to be the global extreme. Perhaps the concept of unimodality is better grasped through an example. Consider the function \\(f(x)\\) defined as\n\\[\nf(x) = (x + 2)^2, \\ -10 \\leq x &lt;= 10\n\\]\nFigure 2.1 plots function \\(f\\) on its defined range. Note that function \\(f\\) is unimodal only in the minimization case.\n\n\n\n\n\nFigure 2.1: An unimodal function\n\n\n\n\nTo better appreciate unimodality, let’s look at another objective function \\(\\text{min} \\ -(1.4 - 2x) \\sin(18x)\\). Figure 2.2 shows its plot within range [0, 0.6]. It’s clear that there are two local minima for this objective function.\n\n\n14\n\n\n\n\n\nFigure 2.2: A multimodal function"
+  },
+  {
+    "objectID": "uncons-golden-section-search.html#equal-interval-search",
+    "href": "uncons-golden-section-search.html#equal-interval-search",
+    "title": "2  Unimodal Function and Search Methods",
+    "section": "2.2 Equal Interval Search",
+    "text": "2.2 Equal Interval Search\nIn this section, we present the equal interval search method. It is assumed that an initial range \\([lb, ub]\\) is provided and the pursued minimum or maximum must locate within the range. The algorithm works as follows:\n\nInputs: function \\(f(x)\\) to be minimized, initial range \\([lb, ub]\\)\nOutput: local minimum \\(x^*\\)\nAlgorithm Flow:\n\nStep 1: Choose a small value \\(\\epsilon\\) as the stopping criterion. Let \\(x^{left} = lb\\) and \\(x^{right} = ub\\) denote the initial lower bound and upper bound of the current search range, respectively.\nStep 2: If \\(x^{right} - x^{left} \\leq \\epsilon\\), then \\(x^* = \\frac{1}{2}(x^{left} + x^{right})\\), exit and output \\(x^*\\). Otherwise, choose two middle points according to \\[\\begin{align}\nx^{(1)} = \\frac{x^{left} + x^{right}}{2} - \\frac{\\epsilon}{2} \\\\\nx^{(2)} = \\frac{x^{left} + x^{right}}{2} + \\frac{\\epsilon}{2}\n\\end{align}\\] If \\(f(x^{(1)}) &lt; f(x^{(2)})\\), go to Step 3, otherwise, go to step Step 4.\nStep 3: Update the current search interval upper bound by \\[\\begin{align}\nx^{right} = x^{(2)}\n\\end{align}\\] and proceed to Step 2.\nStep 4: Update the current search interval lower bound by \\[\\begin{align}\nx^{left} = x^{(1)}\n\\end{align}\\] and proceed to Step 2.\n\n\n\n\n\n\n\nFigure 2.3: Equal interval search\n\n\n\n\n\n\n\n\n\nFigure 2.4: Equal interval search\n\n\n\n\n\ndef equal_interval_search(func, lb, ub):\n    x_left = lb\n    x_right = ub\n    eps = 0.01\n    \n    points = np.empty(shape=(0, 4), dtype=float)\n    while abs(x_right - x_left - eps) &gt;= 1.e-4:\n        x1 = (x_left + x_right) / 2 - eps / 2\n        x2 = (x_left + x_right) / 2 + eps / 2\n        arr = [x_left, x1, x2, x_right]\n        points = np.append(points, [arr], axis=0)\n        \n        if f(x1) &lt; f(x2):\n            x_right = x2\n        else:\n            x_left = x1\n    \n    x_opt = (x_left + x_right) / 2\n    return x_opt, points\n\ndef func(x):\n    return (x + 2)**2\nx_opt, points = equal_interval_search(func, lb=-5, ub=5)\nprint(round(x_opt, 2))\n    \n\n-2.0"
+  },
+  {
+    "objectID": "uncons-golden-section-search.html#golden-section-search",
+    "href": "uncons-golden-section-search.html#golden-section-search",
+    "title": "2  Unimodal Function and Search Methods",
+    "section": "2.3 Golden Section Search",
+    "text": "2.3 Golden Section Search"
   },
   {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "2  Summary",
+    "title": "4  Summary",
     "section": "",
     "text": "In summary, this book has no content whatsoever."
-  },
-  {
-    "objectID": "references.html",
-    "href": "references.html",
-    "title": "References",
-    "section": "",
-    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
   }
 ]
